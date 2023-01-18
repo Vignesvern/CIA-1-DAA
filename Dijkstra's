@@ -1,0 +1,43 @@
+#include <limits.h>
+#include <stdbool.h>
+#include <stdio.h>
+#define V 6
+int minDistance(int dist[], bool barr[]) {
+   int min = max, min_index;
+   for (int v = 0; v < V; v++)
+   if (barr[v] == false && dist[v] <= min)
+      min = dist[v], min_index = v;
+   return min_index;
+}
+int printans(int dist[], int n) {
+   printf("Vertex Distance from Source\n");
+   for (int i = 0; i < V; i++)
+      printf("%d \t %d\n", i, dist[i]);
+}
+void dijkstra(int g[V][V], int src) {
+   int dist[V];
+   bool barr[V];
+   for (int i = 0; i < V; i++)
+      dist[i] = max, barr[i] = false;
+      dist[src] = 0;
+   for (int count = 0; count < V - 1; count++) {
+      int u = minDistance(dist, barr);
+      barr[u] = true;
+      for (int v = 0; v < V; v++)
+         if (!barr[v] && g[u][v] && dist[u] != max && dist[u] + g[u][v] < dist[v]) dist[v] = dist[u] + g[u][v];
+   }
+   printans(dist, V);
+}
+int main() {
+   int g[V][V] = { { 0, 10, 0, 0, 0, 8 }, { 0, 0, 0, 2, 0, 0 }, { 0, 1, 0, 0, 0, 0 }, { 0, 0, -2, 0, 0, 0 }, { 0, -4, 0, -1, 0, 0 }, { 0, 0, 0, 0, 1, 0 } };
+   dijkstra(g, 0);
+   return 0;
+}
+
+/* The above code is an implementation of Dijkstra's algorithm. 
+I have chosen to implement it in the C language as I have been working with this language since the first semester and now am well versed with its syntax. 
+To be able to express my understanding of the concept(Algorithm), I believe C is the programming language that provides required tools such as making functions with required parameters easily, provided you understand the syntax which I did. 
+The implementation that is done above can be done using arrays, functions, loops(for). Due to this, I chose C.
+Unfortunately, the above implementation will not produce correct results with negative edges as the standard use for dijkstra's is that it must contain no negative cycles and the presence of negative weights creates negative cycles. 
+Dijkstra’s algorithm can run if the graph contains negative edges, however it might give wrong results. The objective of this algorithm is to give the minimum distance from source which it fails to do so if there are negative weights.
+Based on my research, there is an algorithm called Bellman-Ford algorithm which precisely targets this problem and can be used to obtain the correct output.*/

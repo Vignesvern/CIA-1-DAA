@@ -1,0 +1,58 @@
+#include<stdio.h>
+#include<stdbool.h> 
+
+#define INF 9999
+
+#define V 6
+
+int G[V][V] = { { 0, 10, 0, 0, 0, 8 }, { 0, 0, 0, 2, 0, 0 }, { 0, 1, 0, 0, 0, 0 }, { 0, 0, -2, 0, 0, 0 }, { 0, -4, 0, -1, 0, 0 }, { 0, 0, 0, 0, 1, 0 } };
+
+int main() {
+  int noEdge;  
+
+  int chosen[V];
+
+  memset(chosen, false, sizeof(chosen));
+  
+  noEdge = 0;
+
+  chosen[0] = true;
+
+  int x;  
+  int y;  
+
+  
+  printf("Edge : Weight\n");
+
+  while (noEdge < V - 1) {
+
+    int min = INF;
+    x = 0;
+    y = 0;
+
+    for (int i = 0; i < V; i++) {
+      if (chosen[i]) {
+        for (int j = 0; j < V; j++) {
+          if (!chosen[j] && G[i][j]) {  
+            if (min > G[i][j]) {
+              min = G[i][j];
+              x = i;
+              y = j;
+            }
+          }
+        }
+      }
+    }
+    printf("%d - %d : %d\n", x, y, G[x][y]);
+    chosen[y] = true;
+    noEdge++;
+  }
+
+  return 0;
+}
+/* The above code is an implementation of Prim's algorithm. 
+I have chosen to implement it in the C language as I have been working with this language since the first semester and now am well versed with its syntax. 
+To be able to express my understanding of the concept(Algorithm), I believe C is the programming language that provides required tools such as making functions with required parameters easily, provided you understand the syntax which I did. 
+The implementation that is done above can be done using arrays, functions, loops(for). Due to this, I chose C.
+Unfortunately, the above implementation will not produce correct results as it has to work with directed graphs. Ideally, Prim’s algorithm assumes that all vertices are connected. 
+Due to the fact that every node is not reachable from every other node in a directed graph, hence Prim’s algorithm fails due to this reason.*/

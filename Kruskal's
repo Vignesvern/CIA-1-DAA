@@ -1,0 +1,149 @@
+#include <stdio.h>
+
+#define MAX 20
+
+typedef struct edge {
+  int u, v, w;
+} edge;
+
+typedef struct edgeList {
+  edge data[MAX];
+  int n;
+} edgeList;
+
+edgeList elist;
+
+int Graph[MAX][MAX], n;
+edgeList slist;
+
+void kruskalAlgo();
+int find(int of[], int vertexno);
+void applyUnion(int of[], int c1, int c2);
+void sort();
+void print();
+
+void kruskalAlgo() {
+  int of[MAX], i, j, cno1, cno2;
+  elist.n = 0;
+
+  for (i = 1; i < n; i++)
+    for (j = 0; j < i; j++) {
+      if (Graph[i][j] != 0) {
+        elist.data[elist.n].u = i;
+        elist.data[elist.n].v = j;
+        elist.data[elist.n].w = Graph[i][j];
+        elist.n++;
+      }
+    }
+
+  sort();
+
+  for (i = 0; i < n; i++)
+    of[i] = i;
+
+  slist.n = 0;
+
+  for (i = 0; i < elist.n; i++) {
+    cno1 = find(of, elist.data[i].u);
+    cno2 = find(of, elist.data[i].v);
+
+    if (cno1 != cno2) {
+      slist.data[slist.n] = elist.data[i];
+      slist.n = slist.n + 1;
+      applyUnion(of, cno1, cno2);
+    }
+  }
+}
+
+int find(int of[], int vertexno) {
+  return (of[vertexno]);
+}
+
+void applyUnion(int of[], int c1, int c2) {
+  int i;
+
+  for (i = 0; i < n; i++)
+    if (of[i] == c2)
+      of[i] = c1;
+}
+
+void sort() {
+  int i, j;
+  edge temp;
+
+  for (i = 1; i < elist.n; i++)
+    for (j = 0; j < elist.n - 1; j++)
+      if (elist.data[j].w > elist.data[j + 1].w) {
+        temp = elist.data[j];
+        elist.data[j] = elist.data[j + 1];
+        elist.data[j + 1] = temp;
+      }
+}
+
+void print() {
+  int i, cost = 0;
+
+  for (i = 0; i < slist.n; i++) {
+    printf("\n%d - %d : %d", slist.data[i].u, slist.data[i].v, slist.data[i].w);
+    cost = cost + slist.data[i].w;
+  }
+
+  printf("\nSpanning tree cost: %d", cost);
+}
+
+int main() {
+  int i, j, total_cost;
+
+  n = 6;
+
+  Graph[0][0] = 0;
+  Graph[0][1] = 10;
+  Graph[0][2] = 0;
+  Graph[0][3] = 0;
+  Graph[0][4] = 0;
+  Graph[0][5] = 8;
+
+  Graph[1][0] = 0;
+  Graph[1][1] = 0;
+  Graph[1][2] = 0;
+  Graph[1][3] = 2;
+  Graph[1][4] = 0;
+  Graph[1][5] = 0;
+
+  Graph[2][0] = 0;
+  Graph[2][1] = 1;
+  Graph[2][2] = 0;
+  Graph[2][3] = 0;
+  Graph[2][4] = 0;
+  Graph[2][5] = 0;
+
+  Graph[3][0] = 0;
+  Graph[3][1] = 0;
+  Graph[3][2] = -2;
+  Graph[3][3] = 0;
+  Graph[3][4] = 0;
+  Graph[3][5] = 0;
+
+  Graph[4][0] = 0;
+  Graph[4][1] = -4;
+  Graph[4][2] = 0;
+  Graph[4][3] = -1;
+  Graph[4][4] = 0;
+  Graph[4][5] = 0;
+
+  Graph[5][0] = 0;
+  Graph[5][1] = 0;
+  Graph[5][2] = 0;
+  Graph[5][3] = 0;
+  Graph[5][4] = 1;
+  Graph[5][5] = 0;
+
+  kruskalAlgo();
+  print();
+}
+/* The above code is an implementation of Kruskal's algorithm. 
+I have chosen to implement it in the C language as I have been working with this language since the first semester and now am well versed with its syntax. 
+To be able to express my understanding of the concept(Algorithm), I believe C is the programming language that provides required tools such as making functions with required parameters easily, provided you understand the syntax which I did. 
+The implementation that is done above can be done using arrays, functions, loops(for). Due to this, I chose C.
+Unfortunately, the above implementation will not produce correct results as it has to work with directed graphs. Ideally, In Kruskal’s algorithm, In each step, it is checked that if the edges form a cycle with the spanning-tree formed.
+But Kruskal’s algorithm fails to detect the cycles in a directed graph as there arrise certain cases when there is no cycle between the vertices, but Kruskal’s Algorithm assumes it to be a cycle and doesn’t take consider some edges due to which Kruskal’s Algorithm fails for directed graph.*/
